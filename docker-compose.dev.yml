@@ -10,4 +10,9 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - DB_HOST=db
+      - DB_USER=user
+      - DB_PASS=pass
+      - DB_NAME=test
+
     command: npm run dev

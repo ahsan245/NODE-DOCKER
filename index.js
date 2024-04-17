@@ -2,14 +2,25 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 const mysql = require('mysql');
+const { dbConfig } = require('./config/config');
 
-const connection = mysql.createConnection({
-    host: 'db',
-    user: 'user',
-    password: 'pass',
-    database: 'test',
-    port: '3306'
-    });
+
+const connectwithRetry = () => {
+   const connection = mysql.createConnection(dbConfig);
+    connection.connect((err) => {
+         if (err) {
+              console.error('Failed to connect to MySQL - retrying in 5 sec', err);
+              setTimeout(connectwithRetry, 5000);
+         }  
+         else{
+            console.log('Connected to MySQL');
+         }
+    }
+    );
+    };
+connectwithRetry();
+
+
 app.get('/', (req, res) => {
     res.send('Hello World!!');
     });
